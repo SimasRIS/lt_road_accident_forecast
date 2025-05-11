@@ -81,9 +81,15 @@ if __name__ == '__main__':
     # Load raw JSON data
     raw_df = load_all_jsons(RAW_DIR)
 
-    # Clean data
+    # Clean events data
     events_df = clean_events(raw_df)
+    # Filter to include only events from 2013 onwards
+    events_df = events_df[events_df['metai'] >= 2013]
+
+    # Clean participants data
     participants_df = clean_participants(raw_df)
+    # Keep only participants for filtered events
+    participants_df = participants_df[participants_df['registrokodas'].isin(events_df['registrokodas'])]
 
     # Make sure processed directory exists
     os.makedirs(PROCESSED_DIR, exist_ok=True)
