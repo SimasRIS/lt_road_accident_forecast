@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from pyproj import Transformer
 import dash
@@ -24,12 +23,12 @@ years = sorted(int(y) for y in df['metai'].unique().tolist())
 
 # --- Dash aplikacijos konfigūracija ---
 app = dash.Dash(__name__)
-app.title = "LT Eismo Įvykių Žemėlapis"
+app.title = "LTU Traffic Incident Map"
 
 app.layout = html.Div([
-    html.H1("Lietuvos eismo įvykių pasiskirstymas 2013–2023"),
+    html.H1("Distribution of traffic accidents in Lithuania 2013–2023"),
     html.Div([
-        html.Label("Įvykio rūšis:"),
+        html.Label("Event type:"),
         dcc.Dropdown(
             id='category-dropdown',
             options=[{'label': cat, 'value': cat} for cat in categories],
@@ -39,7 +38,7 @@ app.layout = html.Div([
         )
     ], style={'display': 'inline-block', 'marginRight': '20px'}),
     html.Div([
-        html.Label("Metai:"),
+        html.Label("Years:"),
         dcc.Slider(
             id='year-slider',
             min=years[0],
