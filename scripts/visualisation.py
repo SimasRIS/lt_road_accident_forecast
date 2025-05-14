@@ -5,7 +5,7 @@ import plotly.express as px
 # Funkcija, kuri sukuria animuotą grafiką
 def create_accident_animation():
     # Įkeliame išvalytus duomenis
-    events_df = pd.read_csv('../data/processed/cleaned_events_df.csv')
+    events_df = pd.read_csv('../data/processed/cleaned_events.csv')
 
     # Grupuojame duomenis pagal metus ir suskaičiuojame avarijų skaičių
     yearly_accidents = events_df.groupby('metai').size().reset_index(name='accident_number')

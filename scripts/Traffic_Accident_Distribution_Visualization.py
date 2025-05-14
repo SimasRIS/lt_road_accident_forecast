@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 # COMMON DATA
-EVENTS_CSV = 'C:/Users/Vartotojas/PycharmProjects/bendras/data/processed/cleaned_events_df.csv'
-PARTICIPANTS_CSV = 'C:/Users/Vartotojas/PycharmProjects/bendras/data/processed/cleaned_participants_df.csv'
+EVENTS_CSV = '../data/processed/cleaned_events.csv'
+PARTICIPANTS_CSV = '../data/processed/cleaned_participants.csv'
 
 """
 Shows how the number of traffic accidents changed each year from 2013 to 2023.
