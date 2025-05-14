@@ -4,24 +4,24 @@ import dash
 from dash import dcc, html, Output, Input
 import plotly.express as px
 
-# --- Duomenų paruošimas ---
-# 1. Nuskaitome eismo įvykių duomenis
+# Data preparation
+# load cleaned data
 df = pd.read_csv('../data/processed/cleaned_events.csv')
-# 2. Filtruojame įrašus nuo 2013 iki 2023 metų
+# Filters data from 2013 to 2023
 df = df[(df['metai'] >= 2013) & (df['metai'] <= 2023)]
-# 3. Konvertuojame koordinates iš LKS92 (EPSG:3346) į WGS84 (EPSG:4326)
+
+# Converts coordinates from LKS92 (EPSG:3346) to WGS84 (EPSG:4326)
 transformer = Transformer.from_crs('epsg:3346', 'epsg:4326', always_xy=True)
-# Transform should take easting (X) then northing (Y) for LKS92
-# Columns in CSV: 'platuma' holds easting, 'ilguma' holds northing, so swap
+# Perfom coordinate conversation (swaping easting/nothong)
 lon, lat = transformer.transform(df['platuma'].values, df['ilguma'].values)
 df['lon'] = lon
 df['lat'] = lat
 
-# 4. Išskiriame unikalias kategorijas ir metus
+# Extract sorted lists of unique event types and years
 categories = sorted(df['rusis'].unique().tolist())
 years = sorted(int(y) for y in df['metai'].unique().tolist())
 
-# --- Dash aplikacijos konfigūracija ---
+# Dash Application configuration
 app = dash.Dash(__name__)
 app.title = "LTU Traffic Incident Map"
 
@@ -51,10 +51,10 @@ app.layout = html.Div([
     dcc.Graph(id='map-graph', config={'displayModeBar': True})
 ], style={'padding': '20px'})
 
-# --- Funkcija žemėlapiui sukurti ---
+# Map Figure Creation Function
 def make_scatter_map(category: str, year: int):
     subset = df[(df['rusis'] == category) & (df['metai'] == year)]
-    # Jei nėra duomenų, grąžiname tuščią figūrą
+    # If no data, return an empty figure
     if subset.empty:
         fig = px.scatter_map(lat=[], lon=[])
     else:
@@ -64,7 +64,7 @@ def make_scatter_map(category: str, year: int):
             lon='lon',
             hover_data={'metai': True, 'rusis': True}
         )
-    # Bendras figūros konfigūracija
+    # General layout settings
     layout_kwargs = {
         'mapbox_style': 'open-street-map',
         'mapbox_center': {'lat': 55.0, 'lon': 25.0},
@@ -73,12 +73,12 @@ def make_scatter_map(category: str, year: int):
     }
 
     fig.update_layout(**layout_kwargs)
-    # Jei yra taškų, pakoreguojame marker parametrus
+    # If points exist, adjust marker styling
     if not subset.empty:
         fig.update_traces(marker=dict(size=6, opacity=0.7))
     return fig
 
-# --- Callback atnaujinimui ---
+# Map Update Callback
 @app.callback(
     Output('map-graph', 'figure'),
     Input('category-dropdown', 'value'),
@@ -87,6 +87,6 @@ def make_scatter_map(category: str, year: int):
 def update_map(category, year):
     return make_scatter_map(category, year)
 
-# --- Paleidimas ---
+# Run
 if __name__ == '__main__':
     app.run(debug=True)
