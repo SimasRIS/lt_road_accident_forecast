@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Vizualizacijos</h2>
+
+  <form method="post" style="margin-bottom:1rem;">
+    {% for key, label, _ in options %}
+      <label style="margin-right:1rem;">
+        <input
+          type="checkbox"
+          name="graphs"
+          value="{{ key }}"
+          {% if key in selected %}checked{% endif %}
+        >
+        {{ label }}
+      </label>
+    {% endfor %}
+    <button type="submit">Rodyti</button>
+  </form>
+
+  <div id="charts-container">
+    {% for graph in graphs %}
+      <div class="chart-block">
+        {{ graph.div | safe }}
+        <div class="chart-desc">{{ graph.desc }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

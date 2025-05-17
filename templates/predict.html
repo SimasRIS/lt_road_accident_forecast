@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Model Forecast{% endblock %}
+
+{% block content %}
+  <h2>Traffic accident forecast</h2>
+
+  <form id="predict-form" method="post">
+    <div>
+      <label for="savivaldybe">Choose municipality:</label><br>
+      <select name="savivaldybe" id="savivaldybe" required>
+        <option value="" disabled selected>- Select -</option>
+        {% for s in savivaldybes %}
+          <option
+            value="{{ s }}"
+            {% if s == selected_municipality %}selected{% endif %}
+          >{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="margin-top:1em;">
+      <label for="date">Forecast date:</label><br>
+      <input
+        type="date"
+        name="date"
+        id="date"
+        value="{{ selected_date }}"
+        required
+      >
+    </div>
+
+    <div style="margin-top:1em;">
+      <button type="submit">Predict Forecast</button>
+    </div>
+  </form>
+
+  {% if prediction is not none %}
+    <div id="prediction-result">
+      <p>📈 Predicted accidents: <strong>{{ prediction }}</strong></p>
+    </div>
+
+  {% endif %}
+{% endblock %}
