@@ -1,21 +1,22 @@
+import inspect
 import os
 import numpy as np
 import pandas as pd
 import plotly.offline as pyo
 import joblib
-import logging
 import tensorflow as tf
 from tensorflow.keras import layers, models, regularizers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from flask import Flask, render_template, request
 from scripts.map_visualisation import create_map_div
 from scripts.visualisation import (
-    accidents_by_month,
-    forecast_accidents_sma,
-    plotly_death_forecast,
-    analyze_deaths_by_gender_age_type,
-    analyze_deaths_by_weekday
+   forecast_accidents_sma,
+   analyze_deaths_by_gender_age_type,
+   analyze_deaths_by_weekday,
+   plotly_death_forecast,
+   accidents_by_month
 )
+
 from scripts.model import prepare_sequence
 from scripts.openai import describe_project, describe_chart
 from dotenv import load_dotenv
@@ -26,6 +27,7 @@ DATA_DIR = os.path.join(BASEDIR, 'data', 'processed')
 MODELS_DIR = os.path.join(BASEDIR, 'models')
 MODEL_PATH = os.path.join(MODELS_DIR, 'lstm_accident_model_final.keras')
 EVENTS_CSV = os.path.join(DATA_DIR, 'cleaned_events.csv')
+PARTICIPANTS_CSV = os.path.join(DATA_DIR, 'cleaned_participants.csv')
 load_dotenv()
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
@@ -34,18 +36,27 @@ if not os.getenv("OPENAI_API_KEY"):
     app.logger.error("OPENAI_API_KEY not found! AI features will fail.")
 else:
     app.logger.info("OpenAI API key loaded successfully.")
+
 # load model
 model = tf.keras.models.load_model(MODEL_PATH)
 # load LabelEncoder
 le = joblib.load(os.path.join(MODELS_DIR, 'label_encoder.joblib'))
 
 # load events data
-events_df = pd.read_csv(EVENTS_CSV, parse_dates=['dataLaikas'])
+events_df = pd.read_csv(EVENTS_CSV, parse_dates=['dataLaikas'], low_memory=False)
 events_df['date'] = events_df['dataLaikas'].dt.floor('d')
-
+participants_df = pd.read_csv(PARTICIPANTS_CSV, low_memory=False)
 @app.route('/')
 def home():
-    return render_template('base.html', title='LTU Eismo Įvykiai')
+
+    # Call with no args so it auto-finds README
+    project_desc = describe_project()
+
+    return render_template(
+        'home.html',
+        title='LTU Eismo Įvykiai',
+        project_desc=project_desc
+    )
 
 @app.route('/visualisations', methods=['GET', 'POST'])
 def visualisations():
@@ -57,6 +68,7 @@ def visualisations():
         ('weekday', 'Death by weekday', analyze_deaths_by_weekday),
     ]
 
+
     selected = (request.form.getlist('graphs')
                 if request.method == 'POST'
                 else [key for key, _, _ in options])
@@ -67,7 +79,13 @@ def visualisations():
         if key not in selected:
             continue
 
-        fig = func(events_df)
+        num_params = len(inspect.signature(func).parameters)
+        if num_params == 1:
+            fig = func(events_df)
+        elif num_params == 2:
+            fig = func(events_df, participants_df)
+        else:
+            raise RuntimeError(f'{func.__name__} has unexpected number of parameters.')
 
         # Render the Plotly figure
         div = pyo.plot(fig,
@@ -129,7 +147,7 @@ def predict():
 @app.route('/map', methods=['GET', 'POST'])
 def show_map():
     # 1) Load the same events CSV and parse dates
-    df0 = pd.read_csv(EVENTS_CSV, parse_dates=['dataLaikas'])
+    df0 = pd.read_csv(EVENTS_CSV, parse_dates=['dataLaikas'], low_memory=False)
     # 2) Build your filter dropdowns from the real columns
     categories = sorted(df0['rusis'].unique())
     years      = sorted(df0['metai'].unique())
@@ -155,5 +173,6 @@ def show_map():
         selected_category=cat,
         selected_year=yr
     )
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

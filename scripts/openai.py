@@ -6,13 +6,24 @@ import openai
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+"""
+Summarizes the entire project based on README.md.
+"""
+def describe_project(readme_path: str = None) -> str:
 
-def describe_project(readme_path: str) -> str:
-    """
-    Summarizes the entire project based on the README.md file.
-    """
-    with open(readme_path, encoding="utf-8") as f:
-        readme = f.read()
+    # 1. auto-locate README if no path given
+    if readme_path is None:
+        readme_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'README.md')
+        )
+
+    # 2. read the file
+    try:
+        with open(readme_path, encoding="utf-8") as f:
+            readme = f.read()
+    except FileNotFoundError:
+        return "[ERROR] README.md not found at " + readme_path
+
     system = (
         "You are an expert software documentation assistant. "
         "Given a project's README markdown, produce a concise overview "
@@ -20,28 +31,32 @@ def describe_project(readme_path: str) -> str:
         "its goals, and its main features (visualisations, forecasting model, map)."
     )
     user = f"Here is the project's README:\n\n```markdown\n{readme}\n```"
-    resp = openai.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user",   "content": user}
-        ],
-        temperature=0.7,
-        max_tokens=300
-    )
-    return resp.choices[0].message.content.strip()
 
+    try:
+        resp = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user",   "content": user}
+            ],
+            temperature=0.7
+        )
+        return resp.choices[0].message.content.strip()
+    except Exception as ex:
+        return f"[ERROR] {ex}"
 
+"""
+Given a Plotly figure object, returns a  description of a graph.
+"""
 def describe_chart(fig, title: str = "") -> str:
-    """
-    Given a Plotly figure object, returns a human-readable description.
-    """
+
     fig_json = fig.to_dict()
     system = (
         "You are a data visualization assistant. "
         "Given the JSON spec of a Plotly chart, return a concise, "
         "user-friendly description of what the chart shows."
         "Explain what tendentious we can see in the chart."
+        "Try explain everything in 2-3 sentences."
     )
     user = f"Chart title: {title}\n\n```json\n{fig_json}\n```"
     resp = openai.chat.completions.create(
@@ -51,7 +66,5 @@ def describe_chart(fig, title: str = "") -> str:
             {"role": "user",   "content": user}
         ],
         temperature=0.3,
-        max_tokens=100
     )
     return resp.choices[0].message.content.strip()
-

@@ -1,187 +1,173 @@
-/* ============================================================================
-   Base Page & Typography
-   ============================================================================
-*/
+/* Reset & Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  background: #f8f9fa;
-  color: #333;
-  line-height: 1.5;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  line-height: 1.6;
+  text-align: center;
 }
-
 a {
-  color: #007bff;
+  color: #bb86fc;
   text-decoration: none;
 }
-
 a:hover, a:focus {
   text-decoration: underline;
 }
 
-/* ============================================================================
-   Site Header / Navigation
-   ============================================================================
-*/
-header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 1rem;
+/* Container */
+.container {
+  width: 85%;
+  margin: 32px auto;
+  padding: 0 16px;
   text-align: center;
 }
 
-header nav a {
-  margin: 0 1rem;
-  font-weight: bold;
+/* Navigation */
+nav {
+  background-color: #1e1e1e;
+  padding: 16px 0;
+  border-bottom: 1px solid #333333;
+}
+nav a {
+  margin: 0 16px;
+  font-weight: 600;
+  color: #bb86fc;
+}
+nav a:hover {
+  color: #03dac6;
 }
 
-header nav a.active {
-  color: #0056b3;
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin: 24px 0 16px;
+  font-weight: 600;
+  color: #bb86fc;
 }
 
-/* ============================================================================
-   Forms & Buttons
-   ============================================================================
-*/
+/* Forms & Buttons */
 form {
-  margin: 1rem 0;
-}
-
-button, input[type="submit"] {
-  background: #007bff;
-  border: none;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover, input[type="submit"]:hover {
-  background: #0056b3;
-}
-
-/* ============================================================================
-   Map Page
-   ============================================================================
-*/
-#map {
-  width: 100%;
-  height: 600px;
-  margin: 1rem auto;
-  border: 2px solid #ddd;
-}
-
-.map-form {
-  margin: 1rem auto;
-  text-align: center;
-}
-
-/* ============================================================================
-   Visualisations Page
-   ============================================================================
-*/
-
-/* Container holding all chart blocks */
-#charts-container {
-  text-align: center;   /* center the inline‐blocks */
-  margin: 0 auto;
-  padding: 0;
-  max-width: 1200px;
-}
-
-/* Each chart + description lives in its own card */
-.chart-block {
-  display: inline-block;
-  vertical-align: top;
-  width: 45%;
-  margin: 1%;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.chart-desc {
-  border: 1px solid red;
-  background: #fee;
-  padding: 0.5rem;
-  border-radius: 4px;
-  color: #a00;
-  font-weight: bold;
-  margin-bottom: 1rem; /* space under the chart */
-}
-
-/* ============================================================================
-   Model Forecast Page
-   ============================================================================
-*/
-#predict-form {
-  max-width: 400px;
-  margin: 1rem auto;
-  background: #fff;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-#predict-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-/* ===== forecast text styling ===== */
-#prediction-result {
-  margin-top: 2rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-.forecast-desc {
+  margin: 32px auto;
   max-width: 600px;
-  margin: 1rem auto;
-  padding: 1rem;
-  background-color: #e6f7ff;  /* pale blue */
-  border: 2px solid #66b3ff;  /* blue border */
-  border-radius: 4px;
-  font-size: 1rem;
-  color: #004a99;
+  padding: 32px;
+  background-color: #1e1e1e;
+  border: 1px solid #333333;
+  border-radius: 8px;
   text-align: left;
-  line-height: 1.4;
+}
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+input[type="text"], input[type="date"], select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+button, input[type="submit"] {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #bb86fc;
+  color: #121212;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+}
+button:hover, input[type="submit"]:hover {
+  background-color: #03dac6;
 }
 
-/* ============================================================================
-   Tables (if any)
-   ============================================================================
-*/
+/* Prediction Result */
+#prediction-result {
+  margin-top: 32px;
+  font-size: 20px;
+  font-weight: 600;
+  background-color: #03dac6;
+  color: #121212;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+/* Charts & Visualisations */
+.chart-block {
+  background-color: #1e1e1e;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+.chart-block .plotly-graph-div {
+  width: 100% !important;
+  height: auto;
+}
+.chart-desc {
+  background-color: #03dac6;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  color: #121212;
+  font-weight: 500;
+}
+
+/* Map Container - Full Width */
+.map-container {
+  width: 100%;
+  margin: 32px 0;
+  padding: 16px;
+  background-color: #1e1e1e;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Tables */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0;
+  margin: 24px 0;
 }
-
-table th, table td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+th, td {
+  border: 1px solid #333333;
+  padding: 12px;
   text-align: left;
+  color: #e0e0e0;
+}
+th {
+  background-color: #121212;
 }
 
-table th {
-  background: #f0f0f0;
+/* Utility Classes */
+.text-center {
+  text-align: center;
 }
-
-/* ============================================================================
-   Utilities
-   ============================================================================
-*/
+.mt-1 {
+  margin-top: 16px;
+}
+.mb-1 {
+  margin-bottom: 16px;
+}
+.p-1  {
+  padding: 16px;
+}
+.hidden {
+  display: none !important;
+}
 .clearfix::after {
   content: "";
   display: table;
   clear: both;
-}
-
-.hidden {
-  display: none !important;
 }

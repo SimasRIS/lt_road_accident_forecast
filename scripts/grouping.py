@@ -78,8 +78,8 @@ def main():
     """
     try:
         # Attempting to read the CSV files containing events and participants data
-        events_df = pd.read_csv('../data/processed/cleaned_events_df.csv', low_memory=False)
-        participants_df = pd.read_csv('../data/processed/cleaned_participants_df.csv', low_memory=False)
+        events_df = pd.read_csv('../data/processed/cleaned_events.csv', low_memory=False)
+        participants_df = pd.read_csv('../data/processed/cleaned_participants.csv', low_memory=False)
     except FileNotFoundError as e:
         # Handling the error if the files are not found
         print(f"File not found: {e}")

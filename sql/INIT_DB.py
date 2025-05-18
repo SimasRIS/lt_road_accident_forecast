@@ -1,37 +1,41 @@
+import os
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql
 
-PG_USER = 'postgres'
-PG_PASSWORD = '323157822'
-PG_HOST = 'localhost'
-PG_PORT = 5432
+load_dotenv()
+
+PG_USER = os.getenv('PG_USER')
+PG_PASSWORD = os.getenv('PG_PASSWORD')
+PG_HOST = os.getenv('PG_HOST', 'localhost')
+PG_PORT = os.getenv('PG_PORT', '5432')
 #NUSAKOME DUOMENU BAZES PAVADINIMA, STULPELIUS IR SUKURIAM PACIA LENTELE
 
 
-DB_NAME = 'traffic_accidents'
+DB_NAME = os.getenv('DB_NAME')
 TABLE_SQL = """
     CREATE TABLE IF NOT EXISTS events (
         registrokodas TEXT PRIMARY KEY,
-        data_laikas TIMESTAMP,
+        dataLaikas TIMESTAMP,
         savivaldybe TEXT,
-        ivykio_vieta TEXT,
+        ivykioVieta TEXT,
         rusis TEXT,
         schema1 TEXT,
         schema2 TEXT,
-        dangos_bukle TEXT,
-        paros_metas TEXT,
-        kelio_apsvietimas TEXT,
-        meteo_salygos TEXT,
-        neblaivus_kaltininkai INTEGER,
-        apsvaige_kaltininkai INTEGER,
-        dalyviu_skaicius INTEGER,
-        zuvusiu_skaicius INTEGER,
-        zuv_vaiku INTEGER,
-        suzeistu_skaicius INTEGER,
-        suzeista_vaiku INTEGER,
+        dangosBukle TEXT,
+        parosMetas TEXT,
+        kelioApsvietimas TEXT,
+        meteoSalygos TEXT,
+        neblaivusKaltininkai INTEGER,
+        apsvaigeKaltininkai INTEGER,
+        dalyviuSkaicius INTEGER,
+        zuvusiuSkaicius INTEGER,
+        zuvVaiku INTEGER,
+        suzeistuSkaicius INTEGER,
+        suzeistaVaiku INTEGER,
         ilguma DOUBLE PRECISION,
         platuma DOUBLE PRECISION,
-        leistinas_greitis DOUBLE PRECISION,
+        leistinasGreitis DOUBLE PRECISION,
         metai INTEGER,
         menuo INTEGER,
         diena INTEGER,
@@ -39,18 +43,18 @@ TABLE_SQL = """
     );
     CREATE TABLE IF NOT EXISTS participants (
         id SERIAL PRIMARY KEY,
-        dalyvis_id TEXT,
+        dalyvisId TEXT,
         registrokodas TEXT REFERENCES events(registrokodas) ON DELETE CASCADE,
         kategorija TEXT,
         lytis TEXT,
         amzius INTEGER,
         bukle TEXT,
         busena TEXT,
-        girtumas_promilemis NUMERIC,
+        girtumasPromilemis NUMERIC,
         kaltininkas BOOLEAN,
-        dalyvio_busena TEXT,
-        vairavimo_stazas NUMERIC,
-        dalyvio_ket_pazeidimai TEXT
+        dalyvioBusena TEXT,
+        vairavimoStazas NUMERIC,
+        dalyvioKetPazeidimai TEXT
     );
        
 """
