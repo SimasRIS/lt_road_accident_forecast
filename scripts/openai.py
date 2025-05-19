@@ -25,10 +25,11 @@ def describe_project(readme_path: str = None) -> str:
         return "[ERROR] README.md not found at " + readme_path
 
     system = (
-        "You are an expert software documentation assistant. "
-        "Given a project's README markdown, produce a concise overview "
-        "in user-friendly language, covering: what the project does, "
-        "its goals, and its main features (visualisations, forecasting model, map)."
+        "Tu esi programinės įrangos dokumentacijos ekspertas. "
+        "Remdamiesi projekto README Markdown, parengkite glaustą, "
+        "vartotojui draugišką apžvalgą, kurioje būtų aptarta:, "
+        "ką projektas daro, kokie jo tikslai ir kokios pagrindinės funkcijos "
+        "(vizualizacijos, prognozavimo modelis, žemėlapis)."
     )
     user = f"Here is the project's README:\n\n```markdown\n{readme}\n```"
 
@@ -52,11 +53,11 @@ def describe_chart(fig, title: str = "") -> str:
 
     fig_json = fig.to_dict()
     system = (
-        "You are a data visualization assistant. "
-        "Given the JSON spec of a Plotly chart, return a concise, "
-        "user-friendly description of what the chart shows."
-        "Explain what tendentious we can see in the chart."
-        "Try explain everything in 2-3 sentences."
+        "Tu esi duomenų vizualizacijų asistentas. "
+        "Remdamasis Plotly diagramos JSON specifikacija, "
+        "pateik glaustą ir vartotojui draugišką aprašymą, ką diagrama vaizduoja. "
+        "Paaiškink, kokias tendencijas galima pastebėti diagramoje. "
+        "Stenkis viską paaiškinti 2–3 sakiniais."
     )
     user = f"Chart title: {title}\n\n```json\n{fig_json}\n```"
     resp = openai.chat.completions.create(
