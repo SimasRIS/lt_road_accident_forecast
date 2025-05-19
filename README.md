@@ -2,11 +2,6 @@
 
 Šiame projekte analizuojame Lietuvos kelių eismo įvykių duomenis per dešimties metų laikotarpį (2013–2023 m.), gautus iš oficialaus valstybinių duomenų portalo [data.gov.lt](http://data.gov.lt/). Pagrindinis dėmesys skiriamas LSTM (Long Short-Term Memory) neuroninio tinklo kūrimui, kuris, remdamasis istoriniais duomenimis ir nustatytais dėsningumais, prognozuos kasdienį eismo įvykių skaičių kiekvienoje Lietuvos savivaldybėje.
 
-## Tikslas
-
-- Išanalizuoti kelių eismo įvykių skaičiaus pasiskirstymą pagal laiką ir vietovę
-- Sukurti prognozavimo modelį (LSTM network), kuris nuspėtų ateities įvykių skaičių savivaldybėse
-
 ## Techniniai reikalavimai
 
 - **Duomenų šaltinis:** žali JSON failai (`data/raw/ei_*.json`), sujungiami ir normalizuojami per `scripts/data_loading.py`
