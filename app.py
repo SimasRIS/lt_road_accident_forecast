@@ -92,7 +92,7 @@ def visualisations():
                        include_plotlyjs='cdn' if first else False,
                        output_type='div')
 
-        # **Directly** call the AI describer
+        # Calls the AI describer
         desc = describe_chart(fig, title=label)
 
         graphs.append({
@@ -121,17 +121,17 @@ def predict():
         selected_municipality = request.form['savivaldybe']
         selected_date       = request.form['date']
 
-        # 1) Filter to that municipality
+        # 1. Filter to that municipality
         df_sel = events_df[events_df['savivaldybe'] == selected_municipality].copy()
 
-        # 2) Prepare the (1,30,1) sequence for the model
+        # 2. Prepare the (1,30,1) sequence for the model
         seq = prepare_sequence(df_sel, seq_len=30)
 
-        # 3) Lookup its code and build the second input
+        # 3. Lookup its code and build the second input
         mun_code = le.transform([selected_municipality])[0]
         mun_arr  = np.array([mun_code], dtype=np.int32)
 
-        # 4) Predict with both inputs
+        # 4. Predict with both inputs
         pred = model.predict([seq, mun_arr], verbose=0)
         prediction = int(pred.flatten()[0])
 
@@ -146,13 +146,13 @@ def predict():
     )
 @app.route('/map', methods=['GET', 'POST'])
 def show_map():
-    # 1) Load the same events CSV and parse dates
+    # 1. Load the same events CSV and parse dates
     df0 = pd.read_csv(EVENTS_CSV, parse_dates=['dataLaikas'], low_memory=False)
-    # 2) Build your filter dropdowns from the real columns
+    # 2. Build your filter dropdowns from the real columns
     categories = sorted(df0['rusis'].unique())
     years      = sorted(df0['metai'].unique())
 
-    # 3) Read user selections (if any)
+    # 3. Read user selections (if any)
     if request.method == 'POST':
         cat = request.form.get('category') or None
         yr  = request.form.get('year')
@@ -160,10 +160,10 @@ def show_map():
     else:
         cat, yr = None, None
 
-    # 4) Generate the map div
+    # 4. Generate the map div
     map_div = create_map_div(EVENTS_CSV, category=cat, year=yr)
 
-    # 5) Render, passing both lists into the template
+    # 5. Render, passing both lists into the template
     return render_template(
         'map.html',
         title='Žemėlapis',
